@@ -25,8 +25,8 @@ PIXEL **alloueMemoireImageChar(int nl, int nc){
   if (image == NULL){
     exit(0);
     }
-
-  for(int i = 0 ; i < nl ; i++){
+  int i;
+  for(i = 0 ; i < nl ; i++){
     image[i] = NULL;
     image[i] = calloc(nc , sizeof(PIXEL));
     if (image[i] == NULL){
@@ -119,8 +119,8 @@ int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
     tabpix = NULL;
     size_t nbelement;
     tabpix = alloueMemoireImageChar((*image).nl, (*image).nc); //allocation de l'espace des pixels
-
-    for ( int i = 0; i< (*image).nl ; i++){
+    int i;
+    for (i = 0; i< (*image).nl ; i++){
       nbelement = fread(tabpix[i], sizeof(PIXEL), (*image).nc, f);
       if (nbelement != (size_t)(*image).nc){
         printf("nombre de valeurs lues != du nb de colonnes \n");
