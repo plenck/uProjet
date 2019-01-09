@@ -17,13 +17,23 @@ RETURN : adresse de l'addresse du premier element du tableau
 ----------------------------------------------------------------------------
 */
 
-PIXEL *alloueMemoireImageChar(int nl, int nc){
-  PIXEL *tab;
-  tab = calloc(nl*nc, sizeof(PIXEL));
-  if (tab == NULL){
+PIXEL **alloueMemoireImageChar(int nl, int nc){
+  PIXEL **image; //tableau contenant les adresses des lignes
+  image = NULL ;
+
+  image = calloc(nl, sizeof(PIXEL*));
+  if (image == NULL){
     exit(0);
+    }
+
+  for(int i = 0 ; i < nl ; i++){
+    image[i] = NULL;
+    image[i] = calloc(nc , sizeof(PIXEL));
+    if (image[i] == NULL){
+      exit(0);
+    }
   }
-  return tab;
+  return image;
 }
 
 /*
@@ -45,7 +55,7 @@ IMAGEUCHAR creationImageUChar(int nl, int nc){
   IMAGEUCHAR image;
   image.nl = nl;
   image.nc = nc;
-  PIXEL *tab;
+  PIXEL **tab;
   tab = NULL;
   tab = alloueMemoireImageChar(nl,nc);
   return image;
@@ -100,18 +110,23 @@ int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
   int iMax; // iMax : intensité maximale
 
   fscanf(f,"%d %d %d", &(*image).nl, &(*image).nc, &iMax);
-
   printf("nl = %d\n", (*image).nl);
   printf("nc = %d\n", (*image).nc);
   printf("valeur de iMax : %d\n", iMax);
 
   if (iMax == 255){
-    PIXEL *valeurs;
+    PIXEL **tabpix;
+    tabpix = NULL;
     size_t nbelement;
-    valeurs = alloueMemoireImageChar((*image).nl, (*image).nc);
-    nbelement = fread(valeurs, sizeof(PIXEL), (*image).nl * (*image).nc, f);
-    printf("nbelemnt %ld \n", nbelement);
-    (*image).val = valeurs;
+    tabpix = alloueMemoireImageChar((*image).nl, (*image).nc); //allocation de l'espace des pixels
+
+    for ( int i = 0; i< (*image).nl ; i++){
+      nbelement = fread(tabpix[i], sizeof(PIXEL), (*image).nc, f);
+      if (nbelement != (size_t)(*image).nc){
+        printf("nombre de valeurs lues != du nb de colonnes \n");
+      }
+    }
+    image->val = tabpix ;
     return 0;
   }
   else {

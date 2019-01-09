@@ -6,17 +6,17 @@ typedef unsigned char PIXEL;
 // Definition du type IMAGEUCHAR pour des images 8 bits d’octets
 typedef struct {
   int nl,nc;
-  PIXEL* val;
+  PIXEL **val;
 } IMAGEUCHAR;
 
 // Definition du type IMAGEUINT pour des images 32 bits d’entiers
 typedef struct {
   int nl,nc;
-  int* val;
+  int **val;
 } IMAGEINT;
 
 // Allocation de l’espace memoire pour les pixels
-PIXEL* alloueMemoireImageChar(int nl, int nc);
+PIXEL **alloueMemoireImageChar(int nl, int nc);
 
 // Creation d’une image de d’unsigned char avec allocation dynamique de l’espace des pixels
 IMAGEUCHAR creationImageUChar(int nl, int nc) ;
