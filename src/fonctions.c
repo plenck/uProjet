@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "projet.h"
 /*
 ----------------------------------------------------------------------------
@@ -154,4 +155,38 @@ void resetImageUChar(IMAGEUCHAR *im){
   (*im).nc = 0;
   (*im).nl = 0;
   free((*im).val);
+}
+
+/*
+----------------------------------------------------------------------------
+FONCTION : distance
+----------------------------------------------------------------------------
+DESCRIPTION : Distance d^2 entre le modele et l’image au pixel de coordonees
+              is, js
+----------------------------------------------------------------------------
+PARAMETERS :
+  - IMAGEUCHAR im
+  - IMAGEUCHAR patch
+      passage par adresse : c'est dans patch que l'on stocke la matrice
+  - int is
+  - int js
+----------------------------------------------------------------------------
+RETURN : int distance : valeur de distance
+----------------------------------------------------------------------------
+*/
+int distance(IMAGEUCHAR im, IMAGEUCHAR patch, int is, int js){
+  int distquadra; //distance (ecart quadratique)
+  int nlm, ncm;
+  nlm = patch.nl;
+  ncm = patch.nc;
+  int sum;
+  int i, j ;
+  for(i=0 ; i<(nlm-1); i++){
+    for(j=0 ; i <(ncm-1) ; i++){
+        sum += pow((im.val[((is+im.nl)%im.nl)-nlm/2+i][((js+im.nc)%im.nc)-ncm/2+j]-patch.val[i][j]), 2);
+    }
+  }
+
+  distquadra = (1/nlm*ncm)*sum;
+  return distquadra;
 }
