@@ -32,6 +32,7 @@ IMAGEINT creationImageInt(int nl, int nc) ;
 //colonnes
 void resetImageInt(IMAGEINT* pim);
 
+int **alloueMemoireImageInt(int nl , int nc);
 // Lecture d’une image dans un fichier
 int lectureImagePgmBinaire(char* fic,IMAGEUCHAR * im) ;
 

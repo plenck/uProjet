@@ -51,7 +51,7 @@ PARAMETERS :
 RETURN : IMAGEUCHAR structure contenant le tableau de pixels
 ----------------------------------------------------------------------------
 */
-/*
+
 IMAGEUCHAR creationImageUChar(int nl, int nc){
   IMAGEUCHAR image;
   image.nl = nl;
@@ -61,7 +61,70 @@ IMAGEUCHAR creationImageUChar(int nl, int nc){
   tab = alloueMemoireImageChar(nl,nc);
   return image;
 }
+/*
+----------------------------------------------------------------------------
+FONCTION : alloueMemoireImageInt
+----------------------------------------------------------------------------
+DESCRIPTION : alloue l'espace mémoire des pixels
+----------------------------------------------------------------------------
+PARAMETERS :
+  - int nl; int nc
+----------------------------------------------------------------------------
+RETURN : int**
+----------------------------------------------------------------------------
 */
+int **alloueMemoireImageChar(int nl, int nc){
+  int **tabPix; //tableau contenant les adresses des lignes
+  tabPix = NULL ;
+
+  tabPix = calloc(nl, sizeof(int*));
+  if (tabPix == NULL){
+    exit(0);
+    }
+  int i;
+  for(i = 0 ; i < nl ; i++){
+    tabPix[i] = NULL;
+    tabPix[i] = calloc(nc , sizeof(int));
+    if (tabPix[i] == NULL){
+      exit(0);
+    }
+  }
+  return tabPix;
+}
+
+/*
+----------------------------------------------------------------------------
+FONCTION : creationImageInt
+----------------------------------------------------------------------------
+DESCRIPTION : crée une image dont les pixels seront une valeur entière
+----------------------------------------------------------------------------
+PARAMETERS :
+  - int nl, int nc;
+----------------------------------------------------------------------------
+RETURN : IMAGEUINT
+----------------------------------------------------------------------------
+*/
+IMAGEUINT creationImageInt(int nl, int nc){
+  IMAGEUINT image;
+  image.nl = nl;
+  image.nc = nc;
+  PIXEL **tab;
+  tab = NULL;
+  tab = alloueMemoireImageInt(nl,nc);
+  retrun image;
+}
+
+void resetImageInt(IMAGEUINT *im){
+  (*im).nl = 0;
+  *im.nc = 0;
+  free(*im.val);
+  if(*im.val==NULL){
+    printf("liberation réussie\n");
+  }
+  else{
+    printf("liberation foireuse\n");
+  }
+}
 /*
 ----------------------------------------------------------------------------
 FONCTION : lectureImagePgmBinaire
@@ -79,6 +142,8 @@ RETURN : retourne 0 si succès, toute autre valeur sinon
 int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
   /*=====VERIFICATION DU FORMAT DU FICHIER===== */
   FILE *f;
+  char s[60];
+
   printf("ouverture de %s \n",fichier);
   f = fopen(fichier, "rb" );
 
@@ -87,8 +152,6 @@ int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
     return 1;
   }
 
-  char s[60];
-
   if (fgets(s,60,f)!= NULL){
     if(strcmp(s, "P5\n")==0){
       printf("ouverture du fichier\n");
@@ -96,11 +159,14 @@ int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
     else {
       printf("%s",s);
       printf("erreur format de l'image 'P5' non trouvé\n");
+      fclose(f);
       return 1;
     }
   }
   else {
     printf("fgets à foiré\n");
+    fclose(f);
+    return 1;
   }
 
   fgets(s,60,f); // on lit la ligne de commentaire pour l'ignorer
@@ -116,23 +182,20 @@ int lectureImagePgmBinaire(char *fichier, IMAGEUCHAR *image){
   printf("valeur de iMax : %d\n", iMax);
 
   if (iMax == 255){
-    PIXEL **tabpix;
-    tabpix = NULL;
-    size_t nbelement;
-    tabpix = alloueMemoireImageChar((*image).nl, (*image).nc); //allocation de l'espace des pixels
     int i;
+    int j;
     for (i = 0; i< (*image).nl ; i++){
-      nbelement = fread(tabpix[i], sizeof(PIXEL), (*image).nc, f);
-      if (nbelement != (size_t)(*image).nc){
-        printf("nombre de valeurs lues != du nb de colonnes \n");
+      for (j = 0; j< (*image).nc; i++){
+        fread(image.val[i][j], sizeof(PIXEL), 1, f);
       }
     }
-    image->val = tabpix ;
+    fclose(f);
     return 0;
   }
   else {
     printf("erreur lecture de l'image impossible\n");
     printf("intensité > 255\n");
+    fclose(f);
     return 1;
   }
 }

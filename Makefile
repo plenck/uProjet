@@ -24,7 +24,7 @@ uProjet.exe : $(OBJ)
 	@echo
 	@echo "$(OBJ_COLOR)===EDITION DES LIENS===$(NO_COLOR)"
 	@echo "$(WARN_COLOR)$(OBJ)$(NO_COLOR)"
-	$(CC) -o $@ $^  $(LDFLAGS)
+	$(CC) -o $(TARGETDIR)$@ $^  $(LDFLAGS)
 
 %.o: src/%.c
 	$(CC) -c $< $(CFLAGS)
@@ -33,7 +33,7 @@ clean :
 	-rm -rf src/*.o
 
 mrproper: clean
-	rm -rf bin/td7 bin/exemple
+	rm -rf bin/$(EXEC) $(EXEC)
 
 
 
